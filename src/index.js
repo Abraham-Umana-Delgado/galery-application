@@ -1,3 +1,3 @@
-import dataCategories from "./data/dataCategories";
-const {categories} = dataCategories;
-console.log(categories);
+import './galery-files/addCategories';
+import './galery-files/galeryEvents';
+import './galery-files/openGalleryByActiveCategory';

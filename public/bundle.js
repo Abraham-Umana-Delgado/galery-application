@@ -420,18 +420,82 @@ var dataPictures = {
     },
 };
 
-const { pictures } = dataPictures;
+const { pictures: pictures$1 } = dataPictures;
 
 var dataCategories = {
     categories: [
-        { id: 'america', name: 'America', photoNumber: pictures['america'], src: './img/america.jpg' },
-        { id: 'europa', name: 'Europa', photoNumber: pictures['europa'], src: './img/europa.jpg' },
-        { id: 'africa', name: 'Africa', photoNumber: pictures['africa'], src: './img/africa.jpg' },
-        { id: 'asia', name: 'Asia', photoNumber: pictures['asia'], src: './img/asia.jpg' },
-        { id: 'oceania', name: 'Oceania', photoNumber: pictures['oceania'], src: './img/oceania.jpg' },
-        { id: 'antartida', name: 'Antartida', photoNumber: pictures['antartida'], src: './img/antartida.jpg' },
+        { id: 'america', name: 'America', photoNumber: pictures$1['america'].length, coverImage: './img/america.jpg' },
+        { id: 'europa', name: 'Europa', photoNumber: pictures$1['europa'].length, coverImage: './img/europa.jpg' },
+        { id: 'africa', name: 'Africa', photoNumber: pictures$1['africa'].length, coverImage: './img/africa.jpg' },
+        { id: 'asia', name: 'Asia', photoNumber: pictures$1['asia'].length, coverImage: './img/asia.jpg' },
+        { id: 'oceania', name: 'Oceania', photoNumber: pictures$1['oceania'].length, coverImage: './img/oceania.jpg' },
+        { id: 'antartida', name: 'Antartida', photoNumber: pictures$1['antartida'].length, coverImage: './img/antartida.jpg' },
     ]
 };
 
-const {categories} = dataCategories;
-console.log(categories);
+const { categories } = dataCategories;
+
+const categoryContainer$1 = document.getElementById('categorias');
+
+categories.forEach((category) => {
+    const newCategory = document.createElement('a');
+    const templateNewCategory = `<img class="categoria__img" src="${category.coverImage}" alt="" />
+<div class="categoria__datos">
+    <p class="categoria__nombre">${category.name}</p>
+    <p class="categoria__numero-fotos">${category.photoNumber} Fotos </p>
+</div>
+`;
+
+    newCategory.innerHTML = templateNewCategory;
+    newCategory.classList.add('categoria');
+    newCategory.href = '#';
+    newCategory.dataset.category = category.id;
+
+    categoryContainer$1.append(newCategory);
+});
+
+const galery$2 = document.getElementById('galeria');
+
+const closeGaleryPhotos = () => {
+    galery$2.classList.remove('galeria--active');
+    document.body.style.overflow = '';
+};
+
+const galery$1 = document.getElementById('galeria');
+
+galery$1.addEventListener('click', (event) => {
+    const button = event.target.closest('button');
+    if (button?.dataset?.accion === 'cerrar-galeria') {
+        closeGaleryPhotos();
+    }
+
+});
+
+const { pictures } = dataPictures;
+const categoryContainer = document.getElementById('categorias');
+const galery = document.getElementById('galeria');
+
+categoryContainer.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (event.target.closest('a')) {
+        galery.classList.add('galeria--active');
+        document.body.style.overflow = 'hidden';
+
+        const activeCategory = event.target.closest('a').dataset.category;
+        const photos = pictures[activeCategory];
+
+        const PhotoCarousel = galery.querySelector('.galeria__carousel-slides');
+        PhotoCarousel.innerHTML = '';
+
+        photos.forEach((picture) => {
+            const slide = `<a href="#" class="galeria__carousel-slide">
+            <img class="galeria__carousel-image" src="${picture.source}" data-id="${picture.id}" alt="" />
+        </a>`;
+
+            galery.querySelector('.galeria__carousel-slides').innerHTML += slide;
+        });
+
+        galery.querySelector('.galeria__carousel-slide').classList.add('galeria__carousel-slide--active');
+    }
+});

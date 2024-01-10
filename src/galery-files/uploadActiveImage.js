@@ -1,0 +1,8 @@
+
+
+const uploadActiveImage = () =>{
+
+};
+
+export {uploadActiveImage};
+
