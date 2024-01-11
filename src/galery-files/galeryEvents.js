@@ -1,4 +1,6 @@
 import closeGaleryPhotos from './closeGalery';
+import { loadImageDirection } from './uploadActiveImage';
+import slideClick from './slideClick';
 const galery = document.getElementById('galeria');
 
 galery.addEventListener('click', (event) => {
@@ -7,4 +9,9 @@ galery.addEventListener('click', (event) => {
         closeGaleryPhotos();
     }
 
+    if (event.target.dataset.id) {
+        slideClick(event);
+    }
+
+    if(button?.dataset?.accion === 'siguiente')
 });

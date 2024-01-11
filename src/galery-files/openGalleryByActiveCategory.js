@@ -1,4 +1,5 @@
 import dataPictures from "../data/dataPictures";
+import { uploadActiveImage } from "./uploadActiveImage";
 const { pictures } = dataPictures;
 const categoryContainer = document.getElementById('categorias');
 const galery = document.getElementById('galeria');
@@ -11,7 +12,11 @@ categoryContainer.addEventListener('click', (event) => {
         document.body.style.overflow = 'hidden';
 
         const activeCategory = event.target.closest('a').dataset.category;
+        galery.dataset.category = activeCategory;
+
         const photos = pictures[activeCategory];
+        const { id, name, description, source } = photos[0];
+        uploadActiveImage(id, name, description, source);
 
         const PhotoCarousel = galery.querySelector('.galeria__carousel-slides');
         PhotoCarousel.innerHTML = '';

@@ -420,16 +420,16 @@ var dataPictures = {
     },
 };
 
-const { pictures: pictures$1 } = dataPictures;
+const { pictures: pictures$3 } = dataPictures;
 
 var dataCategories = {
     categories: [
-        { id: 'america', name: 'America', photoNumber: pictures$1['america'].length, coverImage: './img/america.jpg' },
-        { id: 'europa', name: 'Europa', photoNumber: pictures$1['europa'].length, coverImage: './img/europa.jpg' },
-        { id: 'africa', name: 'Africa', photoNumber: pictures$1['africa'].length, coverImage: './img/africa.jpg' },
-        { id: 'asia', name: 'Asia', photoNumber: pictures$1['asia'].length, coverImage: './img/asia.jpg' },
-        { id: 'oceania', name: 'Oceania', photoNumber: pictures$1['oceania'].length, coverImage: './img/oceania.jpg' },
-        { id: 'antartida', name: 'Antartida', photoNumber: pictures$1['antartida'].length, coverImage: './img/antartida.jpg' },
+        { id: 'america', name: 'America', photoNumber: pictures$3['america'].length, coverImage: './img/america.jpg' },
+        { id: 'europa', name: 'Europa', photoNumber: pictures$3['europa'].length, coverImage: './img/europa.jpg' },
+        { id: 'africa', name: 'Africa', photoNumber: pictures$3['africa'].length, coverImage: './img/africa.jpg' },
+        { id: 'asia', name: 'Asia', photoNumber: pictures$3['asia'].length, coverImage: './img/asia.jpg' },
+        { id: 'oceania', name: 'Oceania', photoNumber: pictures$3['oceania'].length, coverImage: './img/oceania.jpg' },
+        { id: 'antartida', name: 'Antartida', photoNumber: pictures$3['antartida'].length, coverImage: './img/antartida.jpg' },
     ]
 };
 
@@ -454,11 +454,56 @@ categories.forEach((category) => {
     categoryContainer$1.append(newCategory);
 });
 
-const galery$2 = document.getElementById('galeria');
+const galery$4 = document.getElementById('galeria');
 
 const closeGaleryPhotos = () => {
-    galery$2.classList.remove('galeria--active');
+    galery$4.classList.remove('galeria--active');
     document.body.style.overflow = '';
+};
+
+const { pictures: pictures$2 } = dataPictures;
+const galery$3 = document.getElementById('galeria');
+
+const uploadActiveImage = (id, name, description, source) => {
+    galery$3.querySelector('.galeria__imagen').src = source;
+    galery$3.querySelector('.galeria__imagen').dataset.id = id;
+    galery$3.querySelector('.galeria__titulo').innerHTML = name;
+    galery$3.querySelector('.galeria__descripcion-imagen-activa').innerHTML = description;
+
+    const activeCategory = galery$3.dataset.category;
+    const photographys = pictures$2[activeCategory];
+    let indexActiveImage;
+
+    photographys.forEach((photo, index) => {
+        if (photo.id === id) {
+            indexActiveImage = index;
+        }
+    });
+
+    if (galery$3.querySelectorAll('.galeria__carousel-slide').length > 0) {
+        galery$3.querySelector('.galeria__carousel-slide--active').classList.remove('galeria__carousel-slide--active');
+        galery$3.querySelectorAll('.galeria__carousel-slide')[indexActiveImage].classList.add('galeria__carousel-slide--active');
+    }
+};
+
+const { pictures: pictures$1 } = dataPictures;
+const galery$2 = document.getElementById('galeria');
+
+const slideClick = (event) => {
+    let name, description, src;
+    const identifier = parseInt(event.target.dataset.id);
+    const activeCategory = galery$2.dataset.category;
+    const photos = pictures$1[activeCategory];
+
+    photos.forEach((photo) => {
+        if (photo.id === identifier) {
+            name = photo.name;
+            description = photo.description;
+            src = photo.source;
+        }
+    });
+
+    uploadActiveImage(identifier, name, description, src);
 };
 
 const galery$1 = document.getElementById('galeria');
@@ -469,6 +514,11 @@ galery$1.addEventListener('click', (event) => {
         closeGaleryPhotos();
     }
 
+    if (event.target.dataset.id) {
+        slideClick(event);
+    }
+
+    
 });
 
 const { pictures } = dataPictures;
@@ -483,7 +533,11 @@ categoryContainer.addEventListener('click', (event) => {
         document.body.style.overflow = 'hidden';
 
         const activeCategory = event.target.closest('a').dataset.category;
+        galery.dataset.category = activeCategory;
+
         const photos = pictures[activeCategory];
+        const { id, name, description, source } = photos[0];
+        uploadActiveImage(id, name, description, source);
 
         const PhotoCarousel = galery.querySelector('.galeria__carousel-slides');
         PhotoCarousel.innerHTML = '';
