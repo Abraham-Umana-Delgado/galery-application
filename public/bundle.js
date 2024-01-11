@@ -486,6 +486,86 @@ const uploadActiveImage = (id, name, description, source) => {
     }
 };
 
+const loadImageDirection = (direction) => {
+    const activeCategory = galery$3.dataset.category;
+    const photographys = pictures$2[activeCategory];
+    const idActiveImage = parseInt(galery$3.querySelector('.galeria__imagen').dataset.id);
+    let indexActiveImage;
+
+    photographys.forEach((photo, index) => {
+        if (photo.id === idActiveImage) {
+            indexActiveImage = index;
+        }
+    });
+
+    if (direction === 'next') {
+        if (photographys[indexActiveImage + 1]) {
+            const { id, name, description, source } = photographys[indexActiveImage + 1];
+            uploadActiveImage(id, name, description, source);
+        }
+    } else if (direction === 'former') {
+        if (photographys[indexActiveImage - 1]) {
+            const { id, name, description, source } = photographys[indexActiveImage - 1];
+            uploadActiveImage(id, name, description, source);
+        }
+    }
+};
+
+const gallery = document.getElementById('galeria');
+
+const carouselImageDirection = (direction) => {
+    const slides = gallery.querySelectorAll('.galeria__carousel-slide');
+
+    const optiones = {
+        root: gallery.querySelector('.galeria__carousel'),
+        rootMargin: '0px',
+        threshold: 0.9,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+
+        const slidesVisibles = entries.filter((entry) => {
+            if (entry.isIntersecting === true) {
+                return entry;
+            }
+        });
+
+        if (direction === 'next') {
+            const lastSlideVisible = slidesVisibles[slidesVisibles.length - 1];
+            const indexLastSlideVisible = entries.indexOf(lastSlideVisible);
+            if (entries.length - 1 > indexLastSlideVisible) {
+                entries[indexLastSlideVisible + 1].target.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "start"
+                });
+            }
+            else {
+                alert('Ya no hay mas slides para mostrar');
+            }
+        } else if (direction === 'former') {
+            const firstSlideVisible = slidesVisibles[0];
+            const indexFirstSlideVisible = entries.indexOf(firstSlideVisible);
+
+            if (indexFirstSlideVisible >= 1) {
+                entries[indexFirstSlideVisible - 1].target.scrollIntoView({
+                    behavior: 'smooth',
+                    inline: 'start'
+                });
+            } else {
+                alert('Ya no hay mas slides para mostrar');
+            }
+        }
+
+        slides.forEach((slide) => {
+            observer.unobserve(slide);
+        });
+    }, optiones);
+
+    slides.forEach((slide) => {
+        observer.observe(slide);
+    });
+};
+
 const { pictures: pictures$1 } = dataPictures;
 const galery$2 = document.getElementById('galeria');
 
@@ -518,7 +598,17 @@ galery$1.addEventListener('click', (event) => {
         slideClick(event);
     }
 
-    
+    if (button?.dataset?.accion === 'siguiente-imagen') {
+        loadImageDirection('next');
+    } else if (button?.dataset?.accion === 'anterior-imagen') {
+        loadImageDirection('former');
+    }
+
+    if (button?.dataset?.accion === 'siguiente-slide') {
+        carouselImageDirection('next');
+    } else if (button?.dataset?.accion === 'anterior-slide') {
+        carouselImageDirection('former');
+    }
 });
 
 const { pictures } = dataPictures;

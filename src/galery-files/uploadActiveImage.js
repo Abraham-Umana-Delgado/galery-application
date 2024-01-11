@@ -24,8 +24,29 @@ const uploadActiveImage = (id, name, description, source) => {
     }
 };
 
-const loadImageDirection = (direction) =>{
+const loadImageDirection = (direction) => {
+    const activeCategory = galery.dataset.category;
+    const photographys = pictures[activeCategory];
+    const idActiveImage = parseInt(galery.querySelector('.galeria__imagen').dataset.id);
+    let indexActiveImage;
 
+    photographys.forEach((photo, index) => {
+        if (photo.id === idActiveImage) {
+            indexActiveImage = index;
+        }
+    });
+
+    if (direction === 'next') {
+        if (photographys[indexActiveImage + 1]) {
+            const { id, name, description, source } = photographys[indexActiveImage + 1];
+            uploadActiveImage(id, name, description, source);
+        }
+    } else if (direction === 'former') {
+        if (photographys[indexActiveImage - 1]) {
+            const { id, name, description, source } = photographys[indexActiveImage - 1];
+            uploadActiveImage(id, name, description, source)
+        }
+    }
 }
 
 export { uploadActiveImage, loadImageDirection };
